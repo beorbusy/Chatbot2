@@ -3,6 +3,8 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 
+PORT = 8000
+
 # Initialize the Flask app
 app = Flask(__name__)
 
