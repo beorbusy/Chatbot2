@@ -1,73 +1,63 @@
 # one.py
 
-# Sample data structure to hold responses (this should be defined according to your actual data)
-yatra_data = {
-    'common': {
-        'registration': ["To register for a sojourn, please visit our website or contact customer service."],
-        'cancellation': ["To cancel your registration, please contact our support team at least 48 hours in advance."],
-        'enquiries': ["For enquiries, you can reach us at info@ishasacredwalks.org."],
-        'sadhguru': ["Sadhguru is the founder of Isha Foundation and is known for his wisdom and teachings."],
-        'cost': ["The cost varies depending on the sojourn. Please check our website for detailed pricing."],
-    }
-}
+# Function to simulate getting a message (replace this with your actual logic)
+def get_message():
+    return "Hello from one.py! How can I assist you today?"
 
-# Dummy function to identify yatra from the query
-def identify_yatra(query):
-    yatra_keywords = {
-        'Kailash Manasarovar': ['kailash', 'manasarovar'],
-        'Himalayas': ['himalayas'],
-        'Southern Sojourn': ['southern', 'sojourn'],
-        'Kashi Krama': ['kashi', 'krama']
-    }
-    
-    for yatra, keywords in yatra_keywords.items():
-        if any(keyword in query.lower() for keyword in keywords):
-            return yatra
-    return None
-
-# Dummy function to search for yatra-specific answers
-def search_yatra(query, current_yatra):
-    responses = {
-        'Kailash Manasarovar': ["Kailash Manasarovar is a sacred pilgrimage and usually takes about 12 days."],
-        'Himalayas': ["The Himalayas sojourn offers breathtaking views and is usually 6 days long."],
-        'Southern Sojourn': ["The Southern Sojourn takes you through beautiful temples and culture over 6 days."],
-        'Kashi Krama': ["Kashi Krama includes a visit to the holy city of Varanasi and lasts for 4 days."]
-    }
-    
-    return responses.get(current_yatra, [])
-
-# Chatbot function to process user input
-def chatbot(query):
-    # Check for common questions first
-    common_topics = ['register', 'registration', 'cancel', 'cancellation', 'enquiry', 'contact', 'cost', 'price']
+# Chatbot function
+def chatbot():
+    print("Namaskaram,\nThis is an automated system to answer your questions regarding Isha Sacred Walks sojourns.\n"
+          "Kailash Manasarovar?\nHimalayas?\nSouthern Sojourn?\nKashi Krama?\n")
     current_yatra = None
 
-    # Check for common responses
-    for topic in common_topics:
-        if topic in query.lower():
-            if 'register' in query.lower() or 'registration' in query.lower():
-                return " ".join(yatra_data['common']['registration'])
-            elif 'cancel' in query.lower() or 'cancellation' in query.lower():
-                return " ".join(yatra_data['common']['cancellation'])
-            elif 'enquiry' in query.lower() or 'contact' in query.lower():
-                return " ".join(yatra_data['common']['enquiries'])
-            elif 'sadhguru' in query.lower() or 'guru' in query.lower():
-                return " ".join(yatra_data['common']['sadhguru'])
-            elif 'cost' in query.lower() or 'price' in query.lower():
-                return " ".join(yatra_data['common']['cost'])
+    while True:
+        query = input("\nYour question (type 'exit' to quit): ")
+        if query.lower() == 'exit':
+            print("Goodbye!")
+            break
 
-    # Try to identify the yatra from the query
-    identified_yatra = identify_yatra(query)
-    if identified_yatra:
-        current_yatra = identified_yatra
+        # First check for common questions like registration, cancellation, etc.
+        common_topics = ['register', 'registration', 'cancel', 'cancellation', 'enquiry', 'contact', 'cost', 'price']
 
-    # If no specific yatra is mentioned, prompt the user
-    if not current_yatra:
-        return "Please specify which yatra you are asking about: Himalayas, Kailash Manasarovar, Southern Sojourn, or Kashi Krama."
+        common_response = None
+        for topic in common_topics:
+            if topic in query.lower():
+                # Match the query to the correct common topic and return the corresponding response
+                if 'register' in query.lower() or 'registration' in query.lower():
+                    common_response = "You can register by visiting our website."
+                elif 'cancel' in query.lower() or 'cancellation' in query.lower():
+                    common_response = "To cancel your registration, please contact customer service."
+                elif 'enquiry' in query.lower() or 'contact' in query.lower():
+                    common_response = "For inquiries, please reach out to support@ishasacredwalks.com."
+                elif 'sadhguru' in query.lower() or 'guru' in query.lower():
+                    common_response = "Sadhguru is a guiding force in our sojourns."
+                elif 'cost' in query.lower() or 'price' in query.lower():
+                    common_response = "The cost varies depending on the yatra you choose."
+                break  # Exit the loop once a match is found
 
-    # Search for an answer within the identified or current yatra
-    response = search_yatra(query, current_yatra)
-    if response:
-        return response[0]  # Return the first response
-    else:
-        return "Sorry, I couldn't find an answer to your question."
+        # If a common response is found, return it and skip the yatra-specific search
+        if common_response:
+            print("\nAnswer:")
+            print(common_response)
+            continue  # Skip to the next query
+
+        # Try to identify the yatra from the query
+        identified_yatra = identify_yatra(query)
+        if identified_yatra:
+            current_yatra = identified_yatra
+
+        # If no specific yatra is mentioned, ask the user
+        if not current_yatra:
+            print("Please specify which yatra you are asking about: Himalayas, Kailash Manasarovar, Southern Sojourn, or Kashi Krama.")
+            continue
+
+        # Search for an answer within the identified or current yatra
+        response = search_yatra(query, current_yatra)
+        if response:
+            print("\nAnswer:")
+            print(response)
+        else:
+            print("Sorry, I couldn't find an answer to your question.")
+
+# Start the chatbot (this is for command line use, not for Flask)
+# chatbot()  # Uncomment this line if you want to run the chatbot in the terminal
