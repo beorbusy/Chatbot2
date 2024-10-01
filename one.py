@@ -1,8 +1,106 @@
 # one.py
 
-# Function to simulate getting a message (replace this with your actual logic)
-def get_message():
-    return "Hello from one.py! How can I assist you today?"
+# Import the necessary libraries
+from sentence_transformers import SentenceTransformer
+import faiss  # For vector similarity search
+import numpy as np
+
+# Load the sentence transformer model
+model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+
+# Define the text for all four yatras in a more structured format
+yatra_data = {
+    'kailash_manasarovar': {
+        'overview': [
+            "The Kailash Manasasarovar is a sacred pilgrimage site, highly revered in Hindu culture."
+        ],
+        'faqs': [
+            "Participants should be prepared for the physical challenges of the trip."
+        ]
+    },
+    'himalayas': {
+        'overview': [
+            "The Himalayas offer a unique opportunity to experience the sacred energies of the mountains."
+        ],
+        'inquiries_and_registration': [
+            "To learn more about registration, please visit our official website."
+        ]
+    },
+    'southern_sojourn': {
+        'overview': [
+            "The Southern Sojourn takes you through India's sacred spaces."
+        ],
+        'spiritual_practices': [
+            "The journey includes daily meditations and visits to sacred sites."
+        ],
+        'accommodations': [
+            "Accommodation is provided in guesthouses during the yatra."
+        ],
+        'cost': [
+            "Cost details vary and can be obtained from the Isha Sacred Walks team."
+        ],
+        'itinerary': [
+            "The itinerary includes various sites of spiritual significance."
+        ]
+    },
+    'kashi_krama': {
+        'overview': [
+            "Kashi Krama by Isha Sacred Walks offers a profound spiritual experience."
+        ],
+        'spiritual_practices': [
+            "The sojourn involves meditations and rituals in the ancient city."
+        ],
+        'cost': [
+            "Cost details vary depending on the package and year."
+        ],
+        'itinerary': [
+            "The itinerary covers significant spiritual sites in the ancient city."
+        ]
+    },
+    'common': {
+        'registration': [
+            "Participants can register on the official website."
+        ],
+        'cost': [
+            "Cost details vary depending on the package and year."
+        ]
+    }
+}
+
+# Creating indices based on the new structure
+index_data = {}
+for yatra, sections in yatra_data.items():
+    segments = []
+    for section, texts in sections.items():
+        segments.extend(texts)
+    vectors = model.encode(segments)
+    index = faiss.IndexFlatL2(vectors.shape[1])  # L2 distance
+    index.add(np.array(vectors))  # Add vectors to the index
+    index_data[yatra] = (index, segments)  # Store index and segments
+
+# Modify the search function to handle structured data
+def search_yatra(query, yatra, k=3):
+    # Flatten the sections and concatenate them for the search
+    index, segments = index_data[yatra]
+    query_vector = model.encode([query])  # Encode the query
+    distances, indices = index.search(np.array(query_vector), k)  # Search for top-k results
+
+    # Combine top results
+    combined_answer = " ".join([segments[idx] for idx in indices[0]])
+    return combined_answer
+
+# Function to determine which yatra the user is asking about
+def identify_yatra(query):
+    if 'himalayas' in query.lower() or 'himalaya' in query.lower():
+        return 'himalayas'
+    elif 'kailash' in query.lower() or 'kailas' in query.lower() or 'manasarovar' in query.lower():
+        return 'kailash_manasarovar'
+    elif 'southern' in query.lower():
+        return 'southern_sojourn'
+    elif 'kashi' in query.lower():
+        return 'kashi_krama'
+    else:
+        return None  # If no yatra is identified
 
 # Chatbot function
 def chatbot():
@@ -24,15 +122,13 @@ def chatbot():
             if topic in query.lower():
                 # Match the query to the correct common topic and return the corresponding response
                 if 'register' in query.lower() or 'registration' in query.lower():
-                    common_response = "You can register by visiting our website."
+                    common_response = " ".join(yatra_data['common']['registration'])
                 elif 'cancel' in query.lower() or 'cancellation' in query.lower():
                     common_response = "To cancel your registration, please contact customer service."
                 elif 'enquiry' in query.lower() or 'contact' in query.lower():
                     common_response = "For inquiries, please reach out to support@ishasacredwalks.com."
-                elif 'sadhguru' in query.lower() or 'guru' in query.lower():
-                    common_response = "Sadhguru is a guiding force in our sojourns."
                 elif 'cost' in query.lower() or 'price' in query.lower():
-                    common_response = "The cost varies depending on the yatra you choose."
+                    common_response = " ".join(yatra_data['common']['cost'])
                 break  # Exit the loop once a match is found
 
         # If a common response is found, return it and skip the yatra-specific search
