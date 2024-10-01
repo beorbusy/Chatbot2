@@ -1,4 +1,2 @@
 Flask
-sentence-transformers
-faiss-cpu
-numpy
+
