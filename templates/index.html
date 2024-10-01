@@ -3,12 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isha Sacred Walks</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Isha Sacred Walks Chatbot</title>
+    <script>
+        async function sendQuery() {
+            const userQuery = document.getElementById('userQuery').value;
+            const response = await fetch('/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: userQuery }),
+            });
+            const data = await response.json();
+            document.getElementById('response').innerText = data.response;
+        }
+    </script>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <p>{{ message }}</p>  <!-- Display message passed from main.py -->
-    <p>Welcome to the Isha Sacred Walks chatbot. Ask your questions!</p>
+    <h1>Isha Sacred Walks Chatbot</h1>
+    <input type="text" id="userQuery" placeholder="Ask your question...">
+    <button onclick="sendQuery()">Send</button>
+    <p id="response"></p>
 </body>
 </html>
