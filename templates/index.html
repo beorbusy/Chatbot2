@@ -4,9 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hello from Flask</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">  <!-- Link to the CSS file -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>{{ message }}</h1>  <!-- This will display the message passed from main.py -->
+    <h1>{{ message }}</h1>
+    <div>
+        <input type="text" id="user_input" placeholder="Type a message...">
+        <button id="send_button">Send</button>
+    </div>
+    <div id="chatbox"></div>
+
+    <script>
+        $(document).ready(function(){
+            $('#send_button').click(function(){
+                var userMessage = $('#user_input').val();
+                $.post('/chat', { user_message: userMessage }, function(data){
+                    $('#chatbox').append('<p><strong>You:</strong> ' + userMessage + '</p>');
+                    $('#chatbox').append('<p><strong>Chatbot:</strong> ' + data.response + '</p>');
+                    $('#user_input').val(''); // Clear input
+                });
+            });
+        });
+    </script>
 </body>
 </html>
