@@ -13,3 +13,9 @@ def hello():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port, debug=True)  # Enable debug mode
+
+# one.py
+
+# Add this line at the bottom of the file
+if __name__ == "__main__":
+    chatbot()  # Run the chatbot when this file is executed
