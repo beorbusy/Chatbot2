@@ -1,18 +1,13 @@
-# main.py
-
-from flask import Flask, render_template  # Import render_template to render HTML files
-import os
-from one import get_message  # Importing get_message() from one.py
+from flask import Flask, request, jsonify
+from one import chatbot  # Adjust as necessary to import your chatbot function
 
 app = Flask(__name__)
 
-# Get the port from environment variables, defaulting to 4000
-port = int(os.getenv('PORT', 4000))
+@app.route('/chatbot', methods=['POST'])
+def chat():
+    user_input = request.json.get('query')
+    response = chatbot(user_input)  # Call the chatbot function with user input
+    return jsonify({'response': response})
 
-@app.route('/')
-def home():
-    message = get_message()  # Calling the function from one.py
-    return render_template('index.html', message=message)  # Render index.html and pass the message
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port, debug=True)  # Enable debug mode
+if __name__ == "__main__":
+    app.run(debug=True)
