@@ -1,4 +1,4 @@
-Flask==2.2.2
-sentence-transformers==2.2.0
-faiss-cpu==1.7.2  # Use faiss-gpu if you have a GPU and want to utilize it
+Flask
+sentence-transformers
+faiss-cpu  # Use faiss-gpu if you have a GPU and want to utilize it
 numpy  # This will install the latest compatible version for Python 3.11
