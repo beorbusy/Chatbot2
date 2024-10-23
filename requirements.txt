@@ -1,4 +1,3 @@
-!pip install Flask transformers sentence-transformers fuzzywuzzy
-pip install pyngrok
-ngrok authtoken 2mt5Y7GYuQLj95iSCgDqLbrgH5X_78TzbfhXN7a7somF9RvE9
+pip install transformers 
+pip install sentence-transformers
 
